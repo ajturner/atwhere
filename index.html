@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Am I at Where?</title>
+  <script type="text/javascript" src="http://loki.com/plugin/files/loki.js"></script>
+  <script type="text/javascript">
+  //<![CDATA[
+  var whereConference = {
+    "startDate": new Date(),
+    "endDate": new Date(),
+    "lat": 37.352,
+    "lon": -121.889,
+    "llspan": 0.01
+  }
+  whereConference["startDate"].setFullYear(2009,04,19);
+  whereConference["endDate"].setFullYear(2009,04,21);
+
+  function load()
+  {
+    var loki = LokiAPI();
+    loki.onSuccess = function(location) {atWhere(whereConference,location.latitude,location.longitude,new Date())}
+    loki.onFailure = function(error) {alert(error)}
+    loki.setKey('highearthorbit.com');
+    loki.requestLocation(true,loki.NO_STREET_ADDRESS_LOOKUP);
+  }
+  function atWhere(conference,lat,lon,date) {
+    var status = document.getElementById('status');
+    var location = document.getElementById('location');
+    var tip = document.getElementById('tip');
+
+    if(lat <   conference["lat"]+conference["llspan"] 
+    && lat > conference["lat"]-conference["llspan"] 
+    && lon < conference["lon"]+conference["llspan"] 
+    && lon > conference["lon"]-conference["llspan"] 
+    && date <= conference["endDate"] && date >= conference["startDate"]) {
+      status.innerHTML = 'Yes';
+      tip.innerHTML = "<a href='http://en.oreilly.com/where2009/public/schedule/grid' title='OReilly Where2.0 Conference'>what sessions are you going to?</a>";
+    } else {
+      status.innerHTML = 'No';
+      tip.innerHTML = "<a href='http://en.oreilly.com/where2009/' title='OReilly Where2.0 Conference'>but it's not too late</a>";
+    }
+    location.innerHTML = lat+", "+lon;
+  }
+  function test() {
+    var testDate=new Date();
+    testDate.setFullYear(2009,04,20);
+
+    atWhere(whereConference,whereConference["lat"],whereConference["lon"],testDate);    
+  }
+  </script>
+  <style type="text/css" media="screen">
+  #content {text-align:center; margin-top: 20%;}
+  #status {font-size: 40px;font-weight: bold;}
+  #location {font-size: 10px; color: #AAA;}
+  #tip {font-size: 15px;}
+  </style>  
+</head>
+<body onLoad="load();">
+  <div id="content">
+    <div id="status">Are you at Where2.0?</div>
+    <div id="location"></div>
+    <div id="tip"></div>
+  </div>
+</body>
+</html>
