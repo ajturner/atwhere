@@ -14,20 +14,19 @@
   }
   whereConference["startDate"].setFullYear(2009,04,19);
   whereConference["endDate"].setFullYear(2009,04,21);
+  var status = document.getElementById('status');
+  var location = document.getElementById('location');
+  var tip = document.getElementById('tip');
 
   function load()
   {
     var loki = LokiAPI();
     loki.onSuccess = function(location) {atWhere(whereConference,location.latitude,location.longitude,new Date())}
-    loki.onFailure = function(error) {alert(error)}
+    loki.onFailure = function(error) {status.innerHTML = error;tip.innerHTML = "Hrm... we had an error determing your geo-geekery."}
     loki.setKey('highearthorbit.com');
     loki.requestLocation(true,loki.NO_STREET_ADDRESS_LOOKUP);
   }
   function atWhere(conference,lat,lon,date) {
-    var status = document.getElementById('status');
-    var location = document.getElementById('location');
-    var tip = document.getElementById('tip');
-
     if(lat <   conference["lat"]+conference["llspan"] 
     && lat > conference["lat"]-conference["llspan"] 
     && lon < conference["lon"]+conference["llspan"] 
