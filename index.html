@@ -9,24 +9,25 @@
     "endDate": new Date(),
     "lat": 37.352,
     "lon": -121.889,
-    "llspan": 0.01
+    "llspan": 0.1
   }
   whereConference["startDate"].setFullYear(2009,4,19);
   whereConference["endDate"].setFullYear(2009,4,21);
   var status_div;
   var location_div;
   var tip_div;
-
-  function load()
+  var loki;
+  function amiatwhere()
   {
 		status_div = document.getElementById('status');
   	location_div = document.getElementById('location');
   	tip_div = document.getElementById('tip');
-    var loki = LokiAPI();
+    loki = LokiAPI();
     loki.onSuccess = function(loc) {atWhere(whereConference,loc.latitude,loc.longitude,new Date());}
     loki.onFailure = function(error,msg) {handleErrors(error,msg)}
     loki.setKey('highearthorbit.com');
     loki.requestLocation(true,loki.NO_STREET_ADDRESS_LOOKUP);
+
   }
 	function handleErrors(error,msg) {
 		switch(error) {
@@ -48,10 +49,15 @@
     if(lat <   conference["lat"]+conference["llspan"] 
     && lat > conference["lat"]-conference["llspan"] 
     && lon < conference["lon"]+conference["llspan"] 
-    && lon > conference["lon"]-conference["llspan"] 
-    && date <= conference["endDate"] && date >= conference["startDate"]) {
+    && lon > conference["lon"]-conference["llspan"]) {
+    if(date <= conference["endDate"] && date >= conference["startDate"]) { 
       status_div.innerHTML = 'Yes';
       tip_div.innerHTML = "<a href='http://en.oreilly.com/where2009/public/schedule/grid' title='OReilly Where2.0 Conference'>what sessions are you going to?</a>";
+		} else {
+      status_div.innerHTML = 'Not Yet, but soon!';
+      tip_div.innerHTML = "You're obviously in the right place - <a href='http://en.oreilly.com/where2009/public/schedule/grid' title='OReilly Where2.0 Conference'>what sessions are you going to?</a>";
+
+		}
     } else {
       status_div.innerHTML = 'No';
       tip_div.innerHTML = "<a href='http://en.oreilly.com/where2009/' title='OReilly Where2.0 Conference'>but it's not too late</a>";
@@ -66,17 +72,24 @@
   }
   </script>
   <style type="text/css" media="screen">
-  #content {text-align:center; margin-top: 20%;}
+	* { margin: 0; }
+	html, body { height: 80%; }
+  #content {text-align:center; min-height: 100%; height: auto !important; height: 100%; margin: 20% auto -0px; }
   #status {font-size: 40px;font-weight: bold;}
   #location {font-size: 10px; color: #AAA;}
   #tip {font-size: 15px;}
+	#footer, .push { float: right; margin-right: 20px; height: 22px; color: #888; font-size: 15px}
+  #footer a:link {color: #666;}
+
   </style>  
 </head>
-<body onLoad="load();">
+<body onLoad="amiatwhere();">
   <div id="content">
     <div id="status">Are you at Where2.0?</div>
     <div id="location"></div>
     <div id="tip">currently determining your where2.0abouts</div>
+		<div class="push"></div>
   </div>
+	<div id="footer">built in <a href="http://highearthorbit.com">HighEarthOrbit</a><br />hosted at <a href="http://github.com/ajturner/atwhere" title="AmIAtWhere GitHub Project" rel="_new">GitHub</a></div>
 </body>
 </html>
